@@ -26,6 +26,7 @@ padding:20px 8%;
 background:#42005f;
 position:sticky;
 top:0;
+z-index:100;
 }
 
 .logo{
@@ -86,6 +87,7 @@ font-weight:bold;
 cursor:pointer;
 border:none;
 font-size:16px;
+transition:all 0.3s;
 }
 
 .btn:hover{
@@ -262,6 +264,105 @@ margin-top:15px;
 font-weight:bold;
 }
 
+.supporter-section{
+background:linear-gradient(135deg, #1d012d 0%, #2f0147 100%);
+padding:60px 20px;
+margin:80px 0;
+border:2px solid gold;
+border-radius:20px;
+}
+
+.supporter-container{
+max-width:800px;
+margin:0 auto;
+text-align:center;
+}
+
+.supporter-container h2{
+font-size:36px;
+color:gold;
+margin-bottom:20px;
+}
+
+.supporter-container p{
+font-size:18px;
+color:#e0e0e0;
+margin-bottom:40px;
+line-height:1.8;
+}
+
+.supporter-button{
+background:gold;
+color:#2f0147;
+padding:20px 60px;
+border:none;
+border-radius:40px;
+font-weight:bold;
+font-size:20px;
+cursor:pointer;
+transition:all 0.3s;
+box-shadow:0 5px 20px rgba(255, 215, 0, 0.3);
+}
+
+.supporter-button:hover{
+background:#ffd700;
+transform:scale(1.08);
+box-shadow:0 10px 30px rgba(255, 215, 0, 0.5);
+}
+
+.supporter-button:active{
+transform:scale(0.98);
+}
+
+.tally-section{
+margin-top:40px;
+background:rgba(255, 215, 0, 0.1);
+padding:30px;
+border-radius:15px;
+border:2px solid gold;
+}
+
+.tally-section h3{
+font-size:24px;
+color:gold;
+margin-bottom:15px;
+}
+
+#tallyCount{
+font-size:48px;
+font-weight:bold;
+color:gold;
+margin:20px 0;
+text-shadow:0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.tally-section p{
+font-size:16px;
+color:#e0e0e0;
+}
+
+.confirmation-message{
+display:none;
+background:#4caf50;
+color:white;
+padding:15px;
+border-radius:10px;
+margin-top:20px;
+font-weight:bold;
+animation:slideIn 0.3s ease-in;
+}
+
+@keyframes slideIn{
+from{
+opacity:0;
+transform:translateY(-10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
 footer{
 background:#1d012d;
 text-align:center;
@@ -293,6 +394,8 @@ HEAL MOVEMENT
 <li><a href="#candidates">Candidates</a></li>
 
 <li><a href="#manifesto">Manifesto</a></li>
+
+<li><a href="#supporters">Are you part of us?</a></li>
 
 <li><a href="#newsletter">Newsletter</a></li>
 
@@ -457,6 +560,33 @@ transparency and servant leadership.
 
 </section>
 
+<!-- SUPPORTER SECTION -->
+<section class="supporter-section" id="supporters">
+
+<div class="supporter-container">
+
+<h2>Join the HEAL Movement</h2>
+
+<p>Show your support for the HEAL Movement and help us build a stronger student community. Every vote counts, and every voice matters. Click the button below to confirm you are part of us!</p>
+
+<button class="supporter-button" id="supporterBtn">Are you part of us?</button>
+
+<div class="confirmation-message" id="confirmationMsg">✅ Thank you for your support! You've been counted!</div>
+
+<div class="tally-section">
+
+<h3>Current Supporters</h3>
+
+<div id="tallyCount">0</div>
+
+<p>Join <span id="tallyCount2">0</span> other students supporting the HEAL Movement</p>
+
+</div>
+
+</div>
+
+</section>
+
 <!-- NEWSLETTER SECTION -->
 <section class="newsletter-section" id="newsletter">
 
@@ -528,6 +658,67 @@ document.getElementById("timer").innerHTML=
 days+" Days : "+hours+" Hours : "+minutes+" Minutes : "+seconds+" Seconds";
 
 },1000);
+
+// Load initial tally from localStorage
+function loadTally(){
+let tally = localStorage.getItem("healMovementTally");
+if(tally === null){
+tally = 0;
+localStorage.setItem("healMovementTally", 0);
+}
+return parseInt(tally);
+}
+
+// Update tally display
+function updateTallyDisplay(){
+const tally = loadTally();
+document.getElementById("tallyCount").textContent = tally;
+document.getElementById("tallyCount2").textContent = tally;
+}
+
+// Initialize tally on page load
+window.addEventListener("load", function(){
+updateTallyDisplay();
+});
+
+// Supporter Button Handler
+document.getElementById("supporterBtn").addEventListener("click", function(){
+
+// Get current tally
+let tally = loadTally();
+
+// Increment tally
+tally++;
+
+// Save to localStorage
+localStorage.setItem("healMovementTally", tally);
+
+// Update display
+updateTallyDisplay();
+
+// Show confirmation message
+const confirmMsg = document.getElementById("confirmationMsg");
+confirmMsg.style.display = "block";
+
+// Log the supporter action
+const supporter = {
+supportedAt: new Date().toLocaleString(),
+totalSupporters: tally
+};
+
+console.log("New supporter! Current tally:", tally);
+console.log("Supporter data:", supporter);
+
+// Disable button temporarily to prevent spam
+document.getElementById("supporterBtn").disabled = true;
+
+// Hide confirmation after 3 seconds and re-enable button
+setTimeout(function(){
+confirmMsg.style.display = "none";
+document.getElementById("supporterBtn").disabled = false;
+}, 3000);
+
+});
 
 // Newsletter Form Handler
 document.getElementById("newsletterForm").addEventListener("submit", function(e){
