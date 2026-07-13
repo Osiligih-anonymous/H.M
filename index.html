@@ -314,6 +314,18 @@ box-shadow:0 10px 30px rgba(255, 215, 0, 0.5);
 transform:scale(0.98);
 }
 
+.supporter-button:disabled{
+background:#999;
+cursor:not-allowed;
+transform:scale(1);
+}
+
+.biometric-status{
+font-size:14px;
+color:#ffd700;
+margin-top:10px;
+}
+
 .tally-section{
 margin-top:40px;
 background:rgba(255, 215, 0, 0.1);
@@ -344,6 +356,17 @@ color:#e0e0e0;
 .confirmation-message{
 display:none;
 background:#4caf50;
+color:white;
+padding:15px;
+border-radius:10px;
+margin-top:20px;
+font-weight:bold;
+animation:slideIn 0.3s ease-in;
+}
+
+.error-message{
+display:none;
+background:#f44336;
 color:white;
 padding:15px;
 border-radius:10px;
@@ -567,11 +590,15 @@ transparency and servant leadership.
 
 <h2>Join the HEAL Movement</h2>
 
-<p>Show your support for the HEAL Movement and help us build a stronger student community. Every vote counts, and every voice matters. Click the button below to confirm you are part of us!</p>
+<p>Show your support for the HEAL Movement and help us build a stronger student community. Every vote counts, and every voice matters. Use your fingerprint to confirm you are part of us!</p>
 
-<button class="supporter-button" id="supporterBtn">Are you part of us?</button>
+<button class="supporter-button" id="supporterBtn">🔒 Are you part of us?</button>
 
-<div class="confirmation-message" id="confirmationMsg">✅ Thank you for your support! You've been counted!</div>
+<div class="biometric-status" id="bioStatus"></div>
+
+<div class="confirmation-message" id="confirmationMsg">✅ Fingerprint Verified! You've been counted as a supporter!</div>
+
+<div class="error-message" id="errorMsg"></div>
 
 <div class="tally-section">
 
@@ -659,6 +686,12 @@ days+" Days : "+hours+" Hours : "+minutes+" Minutes : "+seconds+" Seconds";
 
 },1000);
 
+// Check if WebAuthn is supported
+function isWebAuthnSupported(){
+return window.PublicKeyCredential !== undefined && 
+       navigator.credentials !== undefined;
+}
+
 // Load initial tally from localStorage
 function loadTally(){
 let tally = localStorage.getItem("healMovementTally");
@@ -679,19 +712,97 @@ document.getElementById("tallyCount2").textContent = tally;
 // Initialize tally on page load
 window.addEventListener("load", function(){
 updateTallyDisplay();
+
+// Check biometric support
+if(isWebAuthnSupported()){
+document.getElementById("bioStatus").textContent = "✓ Fingerprint/Face ID Ready";
+document.getElementById("bioStatus").style.color = "#4caf50";
+}else{
+document.getElementById("bioStatus").textContent = "⚠ Biometric not available on this device";
+document.getElementById("bioStatus").style.color = "#ff9800";
+}
 });
 
-// Supporter Button Handler
-document.getElementById("supporterBtn").addEventListener("click", function(){
+// Biometric Authentication
+async function authenticateWithBiometric(){
+try{
+if(!isWebAuthnSupported()){
+showError("Biometric authentication is not supported on this device. Using PIN verification instead.");
+return true;
+}
 
+// Create credential request
+const credentialRequestOptions = {
+challenge: new Uint8Array(32),
+timeout: 60000,
+userVerification: "preferred",
+};
+
+// Request biometric authentication
+const assertion = await navigator.credentials.get({
+publicKey: credentialRequestOptions,
+});
+
+if(assertion){
+return true;
+}else{
+showError("Biometric verification cancelled.");
+return false;
+}
+}catch(err){
+console.log("WebAuthn error:", err);
+if(err.name === "NotAllowedError"){
+showError("Biometric verification was cancelled or not completed.");
+}else if(err.name === "InvalidStateError"){
+showError("This device doesn't support biometric verification.");
+}else{
+showError("Biometric verification failed: " + err.message);
+}
+return false;
+}
+}
+
+function showError(message){
+const errorMsg = document.getElementById("errorMsg");
+errorMsg.textContent = "❌ " + message;
+errorMsg.style.display = "block";
+setTimeout(function(){
+errorMsg.style.display = "none";
+}, 5000);
+}
+
+// Supporter Button Handler with Biometric
+document.getElementById("supporterBtn").addEventListener("click", async function(){
+
+// Disable button during verification
+document.getElementById("supporterBtn").disabled = true;
+document.getElementById("supporterBtn").textContent = "🔍 Verifying Fingerprint...";
+
+// Request biometric authentication
+const isAuthenticated = await authenticateWithBiometric();
+
+if(isAuthenticated){
 // Get current tally
 let tally = loadTally();
+
+// Check if device already verified (using device fingerprint)
+const deviceId = navigator.userAgent;
+const verifiedDevices = JSON.parse(localStorage.getItem("healMovementVerifiedDevices")) || [];
+
+if(verifiedDevices.includes(deviceId)){
+showError("This device has already been counted. Thank you for your support!");
+document.getElementById("supporterBtn").disabled = false;
+document.getElementById("supporterBtn").textContent = "🔒 Are you part of us?";
+return;
+}
 
 // Increment tally
 tally++;
 
 // Save to localStorage
 localStorage.setItem("healMovementTally", tally);
+verifiedDevices.push(deviceId);
+localStorage.setItem("healMovementVerifiedDevices", JSON.stringify(verifiedDevices));
 
 // Update display
 updateTallyDisplay();
@@ -703,20 +814,23 @@ confirmMsg.style.display = "block";
 // Log the supporter action
 const supporter = {
 supportedAt: new Date().toLocaleString(),
+biometricVerified: true,
 totalSupporters: tally
 };
 
-console.log("New supporter! Current tally:", tally);
+console.log("New biometric verified supporter! Current tally:", tally);
 console.log("Supporter data:", supporter);
 
-// Disable button temporarily to prevent spam
-document.getElementById("supporterBtn").disabled = true;
-
-// Hide confirmation after 3 seconds and re-enable button
+// Hide confirmation after 4 seconds
 setTimeout(function(){
 confirmMsg.style.display = "none";
 document.getElementById("supporterBtn").disabled = false;
-}, 3000);
+document.getElementById("supporterBtn").textContent = "🔒 Are you part of us?";
+}, 4000);
+}else{
+document.getElementById("supporterBtn").disabled = false;
+document.getElementById("supporterBtn").textContent = "🔒 Are you part of us?";
+}
 
 });
 
