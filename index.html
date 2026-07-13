@@ -83,6 +83,14 @@ padding:15px 35px;
 border-radius:40px;
 text-decoration:none;
 font-weight:bold;
+cursor:pointer;
+border:none;
+font-size:16px;
+}
+
+.btn:hover{
+background:#ffd700;
+transform:scale(1.05);
 }
 
 .hero-image img{
@@ -109,6 +117,64 @@ text-align:center;
 max-width:1000px;
 margin:auto;
 line-height:1.8;
+}
+
+.team-roster{
+display:grid;
+grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+gap:30px;
+max-width:1200px;
+margin:40px auto;
+padding:0 20px;
+}
+
+.candidate-card{
+background:linear-gradient(135deg, #42005f 0%, #2f0147 100%);
+border:2px solid gold;
+border-radius:15px;
+padding:30px;
+text-align:center;
+transition:transform 0.3s, box-shadow 0.3s;
+box-shadow:0 5px 20px rgba(255, 215, 0, 0.3);
+}
+
+.candidate-card:hover{
+transform:translateY(-10px);
+box-shadow:0 10px 30px rgba(255, 215, 0, 0.5);
+}
+
+.candidate-avatar{
+width:120px;
+height:120px;
+background:gold;
+border-radius:50%;
+margin:0 auto 20px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:60px;
+font-weight:bold;
+color:#2f0147;
+}
+
+.candidate-name{
+font-size:22px;
+font-weight:bold;
+color:gold;
+margin:15px 0 10px 0;
+}
+
+.candidate-position{
+font-size:14px;
+color:#ffd700;
+margin-bottom:10px;
+font-weight:600;
+}
+
+.candidate-description{
+font-size:13px;
+color:#e0e0e0;
+line-height:1.6;
 }
 
 .notice{
@@ -180,9 +246,9 @@ Every Voice Counts. Every Student Matters.
 
 </p>
 
-<a href="#manifesto" class="btn">
+<a href="#candidates" class="btn">
 
-Read Our Manifesto
+Meet Our Team
 
 </a>
 
@@ -229,11 +295,75 @@ transparency and servant leadership.
 </section>
 
 <!-- CANDIDATES SECTION -->
-<section class="welcome" id="candidates">
+<section id="candidates">
+
+<div class="welcome">
 
 <h2>Our Candidates</h2>
 
 <p>Meet the dedicated candidates running under the HEAL Movement banner. Each candidate is committed to serving the student community with integrity and passion.</p>
+
+</div>
+
+<!-- PRESIDENT -->
+<div class="team-roster">
+
+<div class="candidate-card">
+<div class="candidate-avatar">👤</div>
+<div class="candidate-name">Calistus Khamasi Pembe</div>
+<div class="candidate-position">FOR PRESIDENT</div>
+<div class="candidate-description">Leading with vision, empowerment, and servant leadership for all students.</div>
+</div>
+
+<!-- VICE PRESIDENT -->
+<div class="candidate-card">
+<div class="candidate-avatar">👤</div>
+<div class="candidate-name">Ochieng David</div>
+<div class="candidate-position">VICE PRESIDENT</div>
+<div class="candidate-description">Supporting the president in advocating for student welfare and development.</div>
+</div>
+
+<!-- SECRETARY GENERAL -->
+<div class="candidate-card">
+<div class="candidate-avatar">👤</div>
+<div class="candidate-name">Elizabeth Mmbone</div>
+<div class="candidate-position">SECRETARY GENERAL</div>
+<div class="candidate-description">Ensuring transparent communication and accountability in all operations.</div>
+</div>
+
+<!-- SECRETARY OF SPORTS & ENTERTAINMENT -->
+<div class="candidate-card">
+<div class="candidate-avatar">🎭</div>
+<div class="candidate-name">Markoes Kamau</div>
+<div class="candidate-position">SECRETARY OF SPORTS & ENTERTAINMENT</div>
+<div class="candidate-description">Promoting student wellness through sports, entertainment, and recreational activities.</div>
+</div>
+
+<!-- SECRETARY LITURGY & SPIRITUAL AFFAIRS -->
+<div class="candidate-card">
+<div class="candidate-avatar">✨</div>
+<div class="candidate-name">Lindsy Njeri Gathua</div>
+<div class="candidate-position">SECRETARY LITURGY & SPIRITUAL AFFAIRS</div>
+<div class="candidate-description">Nurturing spiritual growth and inclusive community engagement.</div>
+</div>
+
+<!-- SECRETARY ACADEMICS -->
+<div class="candidate-card">
+<div class="candidate-avatar">📚</div>
+<div class="candidate-name">Tavin Maina</div>
+<div class="candidate-position">SECRETARY ACADEMICS</div>
+<div class="candidate-description">Advocating for academic excellence and student educational support.</div>
+</div>
+
+<!-- CATERING & ACCOMMODATIONS -->
+<div class="candidate-card">
+<div class="candidate-avatar">👤</div>
+<div class="candidate-name">Idah Mutabari</div>
+<div class="candidate-position">CATERING & ACCOMMODATIONS</div>
+<div class="candidate-description">Ensuring quality student services and comfortable campus living conditions.</div>
+</div>
+
+</div>
 
 </section>
 
