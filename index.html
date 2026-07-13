@@ -184,6 +184,84 @@ color:#e0e0e0;
 line-height:1.6;
 }
 
+.newsletter-section{
+background:linear-gradient(135deg, #42005f 0%, #2f0147 100%);
+padding:60px 20px;
+margin:80px 0;
+border-top:2px solid gold;
+border-bottom:2px solid gold;
+}
+
+.newsletter-container{
+max-width:600px;
+margin:0 auto;
+text-align:center;
+}
+
+.newsletter-container h2{
+font-size:36px;
+color:gold;
+margin-bottom:20px;
+}
+
+.newsletter-container p{
+font-size:16px;
+color:#e0e0e0;
+margin-bottom:30px;
+line-height:1.6;
+}
+
+.newsletter-form{
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.newsletter-form input{
+padding:15px;
+border:2px solid gold;
+border-radius:10px;
+background:#2f0147;
+color:white;
+font-size:16px;
+}
+
+.newsletter-form input::placeholder{
+color:#999;
+}
+
+.newsletter-form input:focus{
+outline:none;
+box-shadow:0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.newsletter-form button{
+background:gold;
+color:#2f0147;
+padding:15px 35px;
+border:none;
+border-radius:10px;
+font-weight:bold;
+cursor:pointer;
+font-size:16px;
+transition:all 0.3s;
+}
+
+.newsletter-form button:hover{
+background:#ffd700;
+transform:scale(1.05);
+}
+
+.newsletter-success{
+display:none;
+background:#4caf50;
+color:white;
+padding:15px;
+border-radius:10px;
+margin-top:15px;
+font-weight:bold;
+}
+
 footer{
 background:#1d012d;
 text-align:center;
@@ -216,7 +294,7 @@ HEAL MOVEMENT
 
 <li><a href="#manifesto">Manifesto</a></li>
 
-<li><a href="#gallery">Gallery</a></li>
+<li><a href="#newsletter">Newsletter</a></li>
 
 <li><a href="#contact">Contact</a></li>
 
@@ -379,12 +457,28 @@ transparency and servant leadership.
 
 </section>
 
-<!-- GALLERY SECTION -->
-<section class="welcome" id="gallery">
+<!-- NEWSLETTER SECTION -->
+<section class="newsletter-section" id="newsletter">
 
-<h2>Gallery</h2>
+<div class="newsletter-container">
 
-<p>Check back soon for photos and videos from our campaign events and student engagements.</p>
+<h2>Stay Updated</h2>
+
+<p>Subscribe to our newsletter to receive the latest updates, campaign news, and voting information from the HEAL Movement.</p>
+
+<form class="newsletter-form" id="newsletterForm">
+
+<input type="text" id="name" placeholder="Your Full Name" required>
+
+<input type="email" id="email" placeholder="Your Email Address" required>
+
+<button type="submit">Subscribe Now</button>
+
+<div class="newsletter-success" id="successMessage">✅ Thank you for subscribing! Check your email for confirmation.</div>
+
+</form>
+
+</div>
 
 </section>
 
@@ -434,6 +528,39 @@ document.getElementById("timer").innerHTML=
 days+" Days : "+hours+" Hours : "+minutes+" Minutes : "+seconds+" Seconds";
 
 },1000);
+
+// Newsletter Form Handler
+document.getElementById("newsletterForm").addEventListener("submit", function(e){
+e.preventDefault();
+
+const name = document.getElementById("name").value;
+const email = document.getElementById("email").value;
+
+// Store subscriber data
+const subscriber = {
+name: name,
+email: email,
+subscriptionDate: new Date().toLocaleString()
+};
+
+// Save to localStorage (client-side storage)
+let subscribers = JSON.parse(localStorage.getItem("healMovementSubscribers")) || [];
+subscribers.push(subscriber);
+localStorage.setItem("healMovementSubscribers", JSON.stringify(subscribers));
+
+// Show success message
+document.getElementById("successMessage").style.display = "block";
+
+// Reset form
+document.getElementById("newsletterForm").reset();
+
+// Hide success message after 5 seconds
+setTimeout(function(){
+document.getElementById("successMessage").style.display = "none";
+}, 5000);
+
+console.log("New subscriber:", subscriber);
+});
 </script>
 
 </body>
